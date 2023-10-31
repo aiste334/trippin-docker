@@ -1,0 +1,27 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ../
+      dockerfile: trippin-docker/frontend/Dockerfile
+    ports:
+      - "80:80"
+  backend:
+    build:
+      context: ../trippin-backend
+      dockerfile: ../trippin-docker/backend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URI: mongodb://0.0.0.0:27017/trippin
+    depends_on:
+      - mongomongo
+  mongomongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+# version: Specifies the Docker Compose file version.
+# services: Defines the containers and their configurations.
+# frontend and backend are your services defined in the docker-compose.yml.
+# mongodb is an official MongoDB image.
