@@ -6,22 +6,33 @@ services:
       dockerfile: trippin-docker/frontend/Dockerfile
     ports:
       - "80:80"
+    networks:
+      - trippin-net
   backend:
     build:
       context: ../trippin-backend
       dockerfile: ../trippin-docker/backend/Dockerfile
     ports:
-      - "3000:3000"
+      - "3009:3009"
     environment:
-      MONGO_URI: mongodb://0.0.0.0:27017/trippin
+      MONGO_URI: mongodb://mongodb:27017/trippin
     depends_on:
-      - mongomongo
-  mongomongo:
+      - mongodb
+    networks:
+      - trippin-net
+  mongodb:
     image: mongo
     ports:
       - "27017:27017"
+    networks:
+      - trippin-net
+  ngrok:
+    image: wernight/ngrok
+    command: sh -c "ngrok http backend:3009"
+    ports:
+      - "4040:4040"
+    networks:
+      - trippin-net
 
-# version: Specifies the Docker Compose file version.
-# services: Defines the containers and their configurations.
-# frontend and backend are your services defined in the docker-compose.yml.
-# mongodb is an official MongoDB image.
+networks:
+  trippin-net:
